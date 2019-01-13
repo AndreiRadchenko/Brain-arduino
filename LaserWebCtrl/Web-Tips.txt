@@ -1,0 +1,13 @@
+REFRESHING THE BROWSER
+
+A line of HTML in the <head> part of the HTML page sent to the browser is used to tell the browser to refresh the page every second. This allows the new state of the switch to be displayed if it has changed.
+
+The line of code in the sketch that does this is shown here:
+
+client.println("<meta http-equiv=\"refresh\" content=\"1\">");
+This will be sent to the browser as the following HTML code:
+
+<meta http-equiv="refresh" content="1">
+
+
+

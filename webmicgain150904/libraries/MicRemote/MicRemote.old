@@ -1,0 +1,132 @@
+#include <avr/io.h> 
+#include <util/delay.h>
+/*
+Ia aoia ooieoee ia?aaaaony ninoiyiea iineaaiaaoaeuiuo aeo, eioi?ua
+iaai onoaiiaeou a ii?o. Ooieoey i?aia?acoao aai a niioaaonoaee n oece?anee 
+iiaee??aiiuie aeiaaie. (ninoiyiea ia aoiaa 0b00011111 ia auoiaa 0b11ooo111
+Aiionoeiua aoiaiua cia?aiey 0, 1, 3, 7, 15, 31
+*/
+
+#define NO_CTRL 0b00011111 //ц╝ц╡ц╓ц═ц╔ц╛ цЁц╞ц╟ц═ц╒ц╚ц╔ц╜ц╗ц╔ ц╙ц═ц╛. ц╙ц═ц╜ц═ц╚цЁ ц╔ц╠ц╚ц╗ ц╞ц╝ ц╚ц╗ц╜ц╗ц©ц╛ цЁц╞ц╟ц═ц╒ц╚ц╔ц╜ц╗ц©
+				   		   //ц╜ц╗ц╥ц╔цёц╝ ц╜ц╔ ц╞ц╟ц╗ц╣ц╝ц╓ц╗ц╡
+//CCU1 is connected to F0, F1, F2 - cont2, cont1, cont0; F3, F4 - mic1, mic2
+//На вход приходит 5 значимих разрядов. Их надо вывести в соответствии с подключенными 
+//к CCU1 выводами порта, так что бы не задеть другие выводы порта
+void CCU1_out(unsigned char ch4out)
+{
+
+	char pf = PORTF;
+	char temp = 0xE0; //0b11100000
+	pf &= temp; 
+	pf |= ch4out;	
+	PORTF = pf;	
+
+}
+
+void portD_out(unsigned char ch4out)
+{
+	
+	char pd = PORTD;
+	char temp = (ch4out<<2);
+	temp &= 124; //0b01111100
+	pd &= 131;  //0b10000011
+	
+	PORTD = temp|pd;	
+
+}
+
+/*
+ц╢цЁц╜ц╙ц╤ц╗ц© set_indicator(ch1) ц╞ц╟ц╔ц╝ц║ц╟ц═ц╖цЁц╔ц╡ ц╖ц╜ц═ц╥ц╔ц╜ц╗ц© 0..4 ц╒ ц╠ц╝ц╝ц╡ц╒ц╔ц╡ц╠ц╡ц╒цЁц╬ц╧ц╗ц╔
+ц╖ц╜ц═ц╥ц╔ц╜ц╗ц© ц╓ц╚ц© ц╗ц╜ц╓ц╗ц╙ц═ц╡ц╝ц╟ц═ 1, 3, 7, 15, 31
+*/
+unsigned char set_indicator(unsigned char ch)
+{
+
+unsigned char ret = 0;
+
+	switch (ch) 
+	{
+		case 0:
+			ret = 1;
+			break;
+
+		case 1:
+			ret = 3;
+			break;
+
+		case 2:
+			ret = 7;
+			break;
+
+		case 3:
+			ret = 15;
+			break;
+
+		case 4:
+			ret = 31;
+			break;
+
+		default:
+			ret = 21;
+	};
+
+return ret;
+
+}
+//на входе номер CCU (char) и значения индексов микрофонов char mic1 mic2
+void gain_change_ccu1(char ccu, char mic1, char mic2)
+{
+	//char mic1;
+	//char mic2;
+
+	if (ccu == 0xC0) //ц╝ц╡ц╓ц═ц╔ц╛ цЁц╞ц╟ц═ц╒ц╚ц╔ц╜ц╗ц╔ ц╙ц═ц╛. ц╙ц═ц╜ц═ц╚цЁ ц╔ц╠ц╚ц╗ ц╞ц╝ ц╚ц╗ц╜ц╗ц©ц╛ цЁц╞ц╟ц═ц╒ц╚ц╔ц╜ц╗ц©
+				   //ц╜ц╗ц╥ц╔цёц╝ ц╜ц╔ ц╞ц╟ц╗ц╣ц╝ц╓ц╗ц╡
+		{	
+			CCU1_out(NO_CTRL);
+		}
+	else
+		{
+			mic1 = 4 - mic1; //индексы имеют обратный порядок относительно значений уровней
+			mic1 &= 0b00000111;
+			mic1 |= 0b00001000;
+
+			mic2 = 4 - mic2;
+			mic2 &= 0b00000111;
+			mic2 |= 0b00010000;
+
+			//portD_out(~mic1);
+			CCU1_out(~mic1);
+			_delay_ms(250);
+			//portD_out(~mic2);
+			CCU1_out(~mic2);
+			//_delay_ms(250);
+		};
+}
+
+void gain_change_ccu2(char ctrl)
+{
+	char mic1;
+	char mic2;
+
+	if (ctrl == 0xC0) //ц╝ц╡ц╓ц═ц╔ц╛ цЁц╞ц╟ц═ц╒ц╚ц╔ц╜ц╗ц╔ ц╙ц═ц╛. ц╙ц═ц╜ц═ц╚цЁ ц╔ц╠ц╚ц╗ ц╞ц╝ ц╚ц╗ц╜ц╗ц©ц╛ цЁц╞ц╟ц═ц╒ц╚ц╔ц╜ц╗ц©
+				   //ц╜ц╗ц╥ц╔цёц╝ ц╜ц╔ ц╞ц╟ц╗ц╣ц╝ц╓ц╗ц╡
+		{	
+			portD_out(NO_CTRL);
+		}
+	else
+		{
+			mic1 = (0b00000111 & ctrl);
+			mic1 |= 0b00001000;
+
+			mic2 = (ctrl>>3);
+			mic2 = (0b00000111 & mic2);
+			mic2 |= 0b00010000;
+
+			portD_out(~mic1);
+			//portB_out(~mic1);
+			_delay_ms(250);
+			portD_out(~mic2);
+			//portB_out(~mic2);
+			//_delay_ms(250);
+		};
+}

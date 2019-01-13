@@ -1,0 +1,36 @@
+    <html>
+    <head>
+    <title>Mic control</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=windows-1251'>
+    <meta name='Keywords' content='Mic control'>
+    
+    <script type=\text/javascript\>
+    function send_param(ccu_ch, index) 
+     {
+        var body = ccu_ch + '=' + index;
+        xhr.open('POST', ' PREFIX /form', true);
+        xhr.setRequestHeader('Content-Type', 'text-plain');
+        xhr.send(body);                
+     } 
+     
+     function send_name(ccu_namber, ccu_name) 
+     {
+        var body = ccu_namber + '=' + ccu_name;
+        xhr.open('POST', ' PREFIX /ccuName', true);
+        xhr.setRequestHeader('Content-Type', 'text-plain');
+        xhr.send(body);                
+     }
+     
+     function save_param() 
+     {
+        var body = 'eeprom' + '=' + '50';       
+        xhr.open('POST', ' PREFIX /saveParam', true);
+        xhr.setRequestHeader('Content-Type', 'text-plain');
+        xhr.send(body); 
+        window.alert('Mic Settings are Saved');        
+     }
+     
+    </script>   
+    
+    </head>
+    <body>;
