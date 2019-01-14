@@ -6,23 +6,8 @@
  * receiver sender   payload
  *    ID      ID
  *    
- *    allowed command
- *    Command example: 0100AT-C001 -> set nano with ID=01 to 1 radio chanel
- *                  0200AT-RX   -> get all HC12 settings for nano with ID=02
- *                  0100MODE-0  -> set nano with ID=01 to LASER_CALIBRATION mode
- *                  0100MODE-1  -> set nano with ID=01 to LASER_RUN mode
- *                  0100MODE-2  -> set nano with ID=01 to LASER_CONFIG mode
- *                  0100MODE    -> get active mod from nano with ID=01
- *                  0000MODE-1  -> set all nanos to LASER_RUN mode
- *                  0100THRESHOLD-300 -> set light sensor threshold level
- *                  0100THRESHOLD     -> get light sensor threshold level
- * 
  *    Sending sequence
- *    0003 MODE: RUN THRES: 600 SENSOR: 555 VSS: 3999 BTN: OFF //OFF->1 ON->0
- *    0003;0;600;555;3999;1;
- *    0003 THRESHOLD DONE
- *    0003 BTN: ON
- * 
+ *    0003 SENSOR: 555 VSS: 999 BTN: OFF
  *    0003 MODE: CONFIG
  *    0003 MODE: RUN
  *    0003 THRESHOLD DONE
@@ -41,9 +26,11 @@ mode activeMode = LASER_CALIBRATION;
 unsigned long Interval = 5000;     // milliseconds between updates
 unsigned long lastUpdate = 0;   // last update of position
 int sensorPin = A0;  // select the input pin for the photoresestor
+int vssPin = A3;     // select the input pin for battary voltage
 int sensorValue = 0;        // variable to store the value coming from the sensor
 int sensor_threshold = 500;  // threshold for light sensor
 long vssValue = 0;  
+bool batteryChecked = false;
 
 int buttonState = HIGH;             // the current reading from the input pin
 int lastButtonState = HIGH;   // the previous reading from the input pin
@@ -57,7 +44,7 @@ byte incomingByte;
 String readBuffer = "";
 String header;
 String payload;
-String _ID = "01"; //Nano transceiver ID - unique for each Nano-HC-12 accemble
+String _ID = "02"; //Nano transceiver ID - unique for each Nano-HC-12 accemble
 String MASTER_ID = "00";
 
 SoftwareSerial HC12(10,11); // HC-12 TX Pin, HC-12 RX Pin
@@ -107,12 +94,6 @@ void loop() {
             if ((millis()-lastUpdate) > Interval)
                 {
                   lightMeasurement();
-                  payload = getModuleState();
-                  Serial.println(payload);
-                  if (!HC12.available()){                    
-                     HC12.print(payload);
-                     //delay(5000);
-                  }
                   lastUpdate = millis();
                 }
             break;
@@ -152,11 +133,35 @@ void checkATCommand () {
 
 void lightMeasurement() {
 
+        String payload = MASTER_ID + _ID;
+        //payload.concat(MASTER_ID);
+        //payload.concat(_ID);
+        char serialbuff[64];
         sensorValue = analogRead(sensorPin);
-        //delay(10);
+        sprintf(serialbuff, " SENSOR:  %d", sensorValue);
+        payload.concat(serialbuff);
+        //sensorValue = analogRead(vssPin);
         vssValue = readVcc();
         vssValue = vssValue*1.38;
-        //delay(10);
+        sprintf(serialbuff, " VSS:  %d", vssValue);
+        payload.concat(serialbuff);
+        if (buttonState == LOW)
+            sprintf(serialbuff, " BTN: ON");
+        else
+            sprintf(serialbuff, " BTN: OFF");
+        payload.concat(serialbuff);    
+        Serial.println(payload);
+        //moduleReplayDelay();
+        if (!HC12.available()){                    
+           HC12.print(payload);
+        //delay(5000);
+        }
+        else {
+          Serial.println(_ID.toInt()*100);
+          delay(_ID.toInt()*100);
+        }
+        // analogReference(INTERNAL);
+        // batteryChecked = false;
 }
 
 /*
@@ -186,43 +191,58 @@ void checkModeCommand() {
     String payload = MASTER_ID + _ID;
     if (readBuffer.startsWith("MODE")) { // Check whether the String starts with "MODE"
       if (readBuffer.length() == 5) {
-          payload = getModuleState();
-          Serial.println(payload);
-          if (!HC12.available()){                    
-              HC12.print(payload);
-          }    
+         switch (activeMode)
+         {
+          case LASER_CALIBRATION:
+            payload.concat("MODE: CALIBRATION");   
+            break;
+          case LASER_RUN:
+            payload.concat("MODE: RUN");
+            break;
+          case LASER_CONFIG:
+            payload.concat("MODE: CONFIG");
+            break;  
+          default:
+            break;
+         };
+         moduleReplayDelay();
+         if (!HC12.available()) {
+            //delay(1000);
+            //moduleReplayDelay();
+            HC12.println(payload);  //return requested MODE
+         }
+         //readBuffer = "";
       }
       else {
-          payload = readBuffer.substring(5,6);   // Set active mode
+          payload = readBuffer.substring(5,6);   // Get active mode
           activeMode = payload.toInt();        // 
-          payload = getModuleState();
-          Serial.println(payload);
-          if (!HC12.available()){                    
-              HC12.print(payload);
-              //delay(5000);
-          }
+          Serial.print("activeMode set to ");
+          Serial.print(activeMode);
       }
     }
       
     if (readBuffer.startsWith("THRESHOLD")) { // Check whether the String starts with "MODE"
       if (readBuffer.length() == 10) {
-          payload = getModuleState();
-          Serial.println(payload);
-          if (!HC12.available()){                    
-              HC12.print(payload);
+          payload.concat(" THRESHOLD IS ");
+          moduleReplayDelay();
+          if (!HC12.available()) {
+               //delay(1000);
+               //moduleReplayDelay();
+               HC12.print(payload);                //return requested TRESHOLD
+               HC12.println(sensor_threshold);     //
           }
+
+          //delay(500);
       }
       else {
           payload = readBuffer.substring(10);   // Get threshold level
           if (payload.toInt()>0)
               sensor_threshold = payload.toInt(); 
-          payload = getModuleState();
-          Serial.println(payload);
-          if (!HC12.available()){                    
-              HC12.print(payload);
-          } 
+          //Serial.println(payload);  
+          Serial.print("sensor_threshold set to ");
+          Serial.println(sensor_threshold);  
       }
-     }
+  }
   readBuffer = "";
 }
 
@@ -231,7 +251,6 @@ void checkLaserCross() {
      String payload = MASTER_ID + _ID;
      char serialbuff[64];
      sensorValue = analogRead(sensorPin);
-     
      if (sensorValue > sensor_threshold)
      {
         //sprintf(serialbuff, "0001Sensor Value:  %d", sensorValue);
@@ -313,20 +332,4 @@ long readVcc() { //measure applyed vss +5V on arduino board
   result |= ADCH<<8;
   result = 1125300L / result; // Back-calculate AVcc in mV
   return result;
-}
-
-/*    return sending sequence
- *    0003 MODE: RUN THRES: 600 SENSOR: 555 VSS: 3999 BTN: OFF
- *    0003;0;600;555;3999;0
- */
-String getModuleState() {
-
-        String payload = MASTER_ID + _ID + ';';
-        payload += String(activeMode) + ';';
-        payload += String(sensor_threshold) + ';';
-        payload += String(sensorValue) + ';';
-        payload += String(vssValue) + ';';
-        payload += String(buttonState) + ';';
-
-        return payload;
 }

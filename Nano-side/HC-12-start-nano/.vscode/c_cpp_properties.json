@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/andrei/Downloads/Arduino/arduino-1.8.8/tools/**",
+                "/home/andrei/Downloads/Arduino/arduino-1.8.8/libraries/**",
+                "/home/andrei/Downloads/Arduino/arduino-1.8.8/hardware/arduino/avr/libraries/**",
+                "/home/andrei/Downloads/Arduino/arduino-1.8.8/hardware/arduino/avr/**",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang++-5.0",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64",
+            "forcedInclude": [
+                "/home/andrei/Downloads/Arduino/arduino-1.8.8/hardware/arduino/avr/cores/arduino/Arduino.h"
+            ]
+        }
+    ],
+    "version": 4
+}
