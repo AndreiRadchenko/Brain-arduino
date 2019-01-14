@@ -70,11 +70,12 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(buttonPin, INPUT_PULLUP);
   digitalWrite(LED_BUILTIN, LOW);
-  analogReference(INTERNAL);
+  analogReference(DEFAULT);
 }
 
 void loop() {
-  
+
+  //sensorValue = analogRead(sensorPin);
   readButtonState(); 
   readBuffer = "";                       // Clear readBuffer
 
@@ -153,10 +154,9 @@ void checkATCommand () {
 void lightMeasurement() {
 
         sensorValue = analogRead(sensorPin);
-        //delay(10);
         vssValue = readVcc();
         vssValue = vssValue*1.38;
-        //delay(10);
+        
 }
 
 /*
@@ -195,6 +195,7 @@ void checkModeCommand() {
       else {
           payload = readBuffer.substring(5,6);   // Set active mode
           activeMode = payload.toInt();        // 
+          
           payload = getModuleState();
           Serial.println(payload);
           if (!HC12.available()){                    
@@ -231,6 +232,7 @@ void checkLaserCross() {
      String payload = MASTER_ID + _ID;
      char serialbuff[64];
      sensorValue = analogRead(sensorPin);
+     delay(1);
      
      if (sensorValue > sensor_threshold)
      {
@@ -317,7 +319,7 @@ long readVcc() { //measure applyed vss +5V on arduino board
 
 /*    return sending sequence
  *    0003 MODE: RUN THRES: 600 SENSOR: 555 VSS: 3999 BTN: OFF
- *    0003;0;600;555;3999;0
+ *    0003;0;600;555;3999;0;
  */
 String getModuleState() {
 
