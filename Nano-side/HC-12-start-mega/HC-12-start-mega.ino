@@ -14,6 +14,12 @@
  *                  0000MODE-1  -> set all nanos to LASER_RUN mode
  *                  0100THRESHOLD-300 -> set light sensor threshold level
  *                  0100THRESHOLD     -> get light sensor threshold level
+ *                  
+ * Receiving sequence
+ *                  0003 MODE: RUN THRES: 600 SENSOR: 555 VSS: 3999 BTN: OFF
+ *                  0003;0;600;555;3999;0
+ *                  0003 THRESHOLD DONE
+ *                  0003 BTN: ON
 */
 //#include <SoftwareSerial.h>
 

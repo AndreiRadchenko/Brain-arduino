@@ -8,21 +8,30 @@
 body { 
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
+  background-color: #070303;
 }
 
 .header {
   overflow: hidden;
-  background-color: #f1f1f1;
-  padding: 0px;
+  background-color:rgb(49, 51, 49);
+  padding: 5px;
+  color: #a19f9f;
 }
 
 .header a {
   float: left;
-  color: black;
-  text-align: center;
-  padding: 12px;
+  text-align: bottom;
+  padding-top: 10px;
   text-decoration: none;
-  font-size: 18px; 
+  border-radius: 4px;
+  height: 35px; 
+  font-size: 24px;
+}
+
+.header h1 {
+  padding: px 5px 0px 10px;
+  margin-left: 8px;
+  text-decoration: none; 
   line-height: 25px;
   border-radius: 4px;
 }
@@ -30,11 +39,6 @@ body {
 .header a.logo {
   font-size: 25px;
   font-weight: bold;
-}
-
-.header a:hover {
-  background-color: #ddd;
-  color: black;
 }
 
 .header a.active {
@@ -45,6 +49,20 @@ body {
 .header-right {
   float: right;
 }
+.header-left {
+  float: left;
+  margin: 8px;
+}
+
+.out_box {
+			float: left;
+			margin: 20px 10px 20px 10px;
+			border: 1px solid blue;
+			padding: 0 5px 0 5px;
+			min-width: 280px;
+      max-width: 316px;
+      height: 100%;
+		}
 
 @media screen and (max-width: 500px) {
   .header a {
@@ -58,87 +76,352 @@ body {
   }
 }
 
-.dropbtn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
+.pagination {
+  margin-left: 20px;
 }
 
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
+.pagination a {
+  text-align: bottom;
+  border-radius: 4px;
+  height: 35px; 
+  font-size: 24px;
   color: black;
-  padding: 12px 16px;
+  float: center;
+  padding: 6px 8px 8px 8px;
   text-decoration: none;
-  /*display: block;*/
+  transition: background-color .3s;
+  background-color: #ddd;
+  margin: 16px 6px 16px 6px;
 }
 
-.dropdown-content a:hover {background-color: #f1f1f1}
-
-.dropdown:hover .dropdown-content {
-  display: block;
+.pagination a.active {
+  background-color: green;
+  color: white;
 }
 
-.dropdown:hover .dropbtn {
-  background-color: #3e8e41;
+.laser_button {
+  margin-left: 6px;
 }
+
+.laser_button a{
+  border-radius: 4px;
+  height: 25px; 
+  font-size: 18px;
+  color: rgb(46, 44, 44);
+  padding: 5px 5px 5px 5px;
+  text-decoration: none;
+  transition: background-color .3s;
+  background-color: rgb(131, 123, 123);
+  margin: 0px 5px 0px 5px;
+}
+
+.laser_button a.active {
+  background-color: rgb(187, 12, 12);
+  color: white;
+}
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 50%;
 }
+
+input[type=number], select {
+  font-size: 18px;
+  height: 35px;
+  padding: 0px 5px;
+  margin-bottom: 10px;
+  margin-left: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+  height: 35px;
+  font-size: 18px;
+  background-color: rgb(177, 185, 177);
+  color: black;
+  padding: 0px 10px 0px 10px;
+  margin: 8px 40px 0px 0px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=button] {
+  height: 35px;
+  width: 60;
+  font-size: 18px;
+  background-color: rgb(177, 185, 177);
+  color: black;
+  padding: 0px 10px 0px 10px;
+  margin: 16px 20px 0px 0px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input[type=button]:hover {
+  background-color: #bec9be;
+}
+
+input[type=submit]:hover {
+  background-color: #bec9be;
+}
+
+input[type=text]{
+  float: right;
+  width: 50%;
+  height: 25px;
+  padding: 12px 5px;
+  margin: 5px 0px 5px 0px;
+  font-size: 18px;
+}
+
+select{
+  float: right;
+  width: 50%;
+  height: 30px;
+  padding: 2px 5px;
+  margin: 0px 0px 5px 0px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+label {
+  float: left;
+  height: 25px;
+  padding: 12px 5px;
+  margin: 8px 0px;
+  font-size: 18px;
+  color: cornflowerblue;
+}
+.osc {
+  margin: 15px 0px 5px 0px;
+  width: 100%;
+  color: cornflowerblue;
+}
+
+.osc h2{
+  margin: 85px 0px 10px 0px;
+  width: 100%;
+}
+
+.osc input[type=text]{
+  width: 100%;
+  height: 25px;
+  padding: 12px 5px;
+  margin: 8px 0px 8px 0px;
+  font-size: 18px;
+}
+
+h2{
+  color: cornflowerblue;
+}
+
+progress {
+  height: 25px;
+  float: right;
+  width: 50%;
+  margin: 15px 0px 15px 0px;
+}
+
 </style>
 </head>
 
 <body>
 <div class="header">
-<h1>The Radio Button Server</h1>
-<table>
-  <tr>
-     <td >
-            <form action="">
-                    Channel:
-                    <input type="number" name="channel_num" min="1" max="100">
-                    <input type="submit">
+<h1>Radio Button Server</h1>
+<div class="header-left">
+           <form action="" font-size: 28px; >
+                    <a>RF Channel:</a>
+                    <input type="number" id="channel_num" name="channel_num" min="1" max="100" value="5">
+                    <input type="submit" formmethod="post">
             </form>
-     </td>
-     <td >
-            <form action="" method="get">
-                Baud rate:
-                <input list="baudrates" name="baudrates" size=12>
-                <datalist id="baudrates">
-                  <option value="2400 baud">
-                  <option value="4800 baud">
-                  <option value="9600 baud">
-                  <option value="19200 baud">
-                  <option value="38400 baud">
-                </datalist>
-                <input type="submit">
-            </form>
-     </td> 
-    </tr>
+</div>
+
+<div class="pagination">
+  <a id="id1" class="active">1</a>
+  <a id="id2" class="">2</a>
+  <a id="id3">3</a>
+  <a id="id4">4</a>
+</div>
+
 
   <div class="header-right">
-    <a class="active" id="CHANAL" >CHANAL</a>
-    <a href="#contact">Contact</a>
-    <a href="#about">About</a>
+    <input type="button" id="calibration" name="calibration" value="Calibration">
+    <input type="button" id="run" name="run" value="Run">
+    <input type="button" id="config" name="config" value="Config">
   </div>
   
+</div>
+
+<div class="out_box">
+  <form class="form_sensor" name="form_SENSOR1">
+    <h2>Transmitter 1</h2>
+
+    <div class="laser_button">
+        <a id="laser_button" class="active">Laser Crossed</a>
+        <a id="button_button" class="">Button Pressed</a>
+    </div><br />
+
+    <label for="battery">Battery level: </label>
+    <progress id="battery" value="50" max="100" ></progress><br />
+
+      <label for="modes">Mode: </label>
+      <select name="modes" onchange="">
+        <option selected>Calibration</option>
+        <option>Run</option>
+        <option>Config</option>
+      </select><br />
+
+    <label for="sensor">Sensor value: </label>
+    <input type="text" id="sensor" name="sensor" value="658" readonly><br />
+
+    <label for="threshold">Threshold: </label>
+    <input type="text" id="threshold" name="threshold" value="500"><br />
+    
+    
+    <div class="osc"> <br />
+        <h2>OSC settings:</h2>
+        <form class="osc" name="OSC">
+            OSC IP:<br>
+            <input type="text" name="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+            <br>
+            OSC Command:<br>
+            <input type="text" name="osc_command" value="">
+            <br><br>
+            <input type="submit" value="Submit" style="float:initial">
+        </form>
+    </div>
+
+
+  </form>
+</div>
+
+<div class="out_box">
+  <form class="form_sensor" name="form_SENSOR2">
+      <h2>Transmitter 2</h2>
+      <div class="laser_button">
+          <a id="laser_button" class="">Laser Crossed</a>
+          <a id="button_button" class="">Button Pressed</a>
+      </div><br />
+  
+      <label for="battery">Battery level: </label>
+      <progress id="battery" value="0" max="100" ></progress><br />
+  
+        <label for="modes">Mode: </label>
+        <select name="modes" onchange="">
+          <option selected>Calibration</option>
+          <option>Run</option>
+          <option>Config</option>
+        </select><br />
+  
+      <label for="sensor">Sensor value: </label>
+      <input type="text" id="sensor" name="sensor" value="0" disabled><br />
+  
+      <label for="threshold">Threshold: </label>
+      <input type="text" id="threshold" name="threshold" value="0"><br />
+      
+      
+      <div class="osc"> <br />
+          <h2>OSC settings:</h2>
+          <form class="osc" name="OSC">
+              OSC IP:<br>
+              <input type="text" name="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+              <br>
+              OSC Command:<br>
+              <input type="text" name="osc_command" value="">
+              <br><br>
+              <input type="submit" value="Submit" style="float:initial">
+          </form>
+      </div>  
+  </form>
+</div>
+
+<div class="out_box">
+  <form class="form_sensor" name="form_SENSOR3">
+      <h2>Transmitter 3</h2>
+      <div class="laser_button">
+          <a id="laser_button" class="">Laser Crossed</a>
+          <a id="button_button" class="">Button Pressed</a>
+      </div><br />
+  
+      <label for="battery">Battery level: </label>
+      <progress id="battery" value="0" max="100" ></progress><br />
+  
+        <label for="modes">Mode: </label>
+        <select name="modes" onchange="">
+          <option selected>Calibration</option>
+          <option>Run</option>
+          <option>Config</option>
+        </select><br />
+  
+      <label for="sensor">Sensor value: </label>
+      <input type="text" id="sensor" name="sensor" value="0" disabled><br />
+  
+      <label for="threshold">Threshold: </label>
+      <input type="text" id="threshold" name="threshold" value="0"><br />
+      
+      
+      <div class="osc"> <br />
+          <h2>OSC settings:</h2>
+          <form class="osc" name="OSC">
+              OSC IP:<br>
+              <input type="text" name="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+              <br>
+              OSC Command:<br>
+              <input type="text" name="osc_command" value="">
+              <br><br>
+              <input type="submit" value="Submit" style="float:initial">
+          </form>
+      </div>
+  
+  
+  </form>
+</div>
+
+<div class="out_box">
+  <form class="form_sensor" name="form_SENSOR4">
+      <h2>Transmitter 4</h2>
+      <div class="laser_button">
+          <a id="laser_button" class="">Laser Crossed</a>
+          <a id="button_button" class="">Button Pressed</a>
+      </div><br />
+  
+      <label for="battery">Battery level: </label>
+      <progress id="battery" value="0" max="100" ></progress><br />
+  
+        <label for="modes">Mode: </label>
+        <select name="modes" onchange="">
+          <option selected>Calibration</option>
+          <option>Run</option>
+          <option>Config</option>
+        </select><br />
+  
+      <label for="sensor">Sensor value: </label>
+      <input type="text" id="sensor" name="sensor" value="0" disabled><br />
+  
+      <label for="threshold">Threshold: </label>
+      <input type="text" id="threshold" name="threshold" value="0"><br />
+      
+      
+      <div class="osc"> <br />
+          <h2>OSC settings:</h2>
+          <form class="osc" name="OSC">
+              OSC IP:<br>
+              <input type="text" name="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+              <br>
+              OSC Command:<br>
+              <input type="text" name="osc_command" value="">
+              <br><br>
+              <input type="submit" value="Submit" style="float:initial">
+          </form>
+      </div>
+  
+  
+  </form>
 </div>
 
 <!--div style="padding-left:20px">

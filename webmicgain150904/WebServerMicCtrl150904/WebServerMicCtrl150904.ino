@@ -1,11 +1,11 @@
-#include <EEPROM.h>
+//#include <EEPROM.h>
 
-#include <WebServer.h>
+//#include <WebServer.h>
 
 //#include <NetSetup.h>
-#include <EEPROMAnything.h>
+//#include <EEPROMAnything.h>
 #include <System.h>
-#include <MyNetSetup.h>
+//#include <MyNetSetup.h>
 
 #include <TFT.h>
 
@@ -14,14 +14,14 @@
 
  */
 
-#include "SPI.h"
-#include "Ethernet.h"
-#include "WebServer.h"
+//#include "SPI.h"
+//#include "Ethernet.h"
+//#include "WebServer.h"
 #include "MicRemote.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "MyNetSetup.h"
-#include <EEPROM.h>
+//#include <EEPROM.h>
 
 #define EEPROM_ETHER 0
 #define EEPROM_SET 50
@@ -39,7 +39,7 @@ inline Print &operator <<(Print &obj, T arg)
 static uint8_t mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 // CHANGE THIS TO MATCH YOUR HOST NETWORK
-static uint8_t ip[] = { 192, 168, 1, 210 };
+static uint8_t ip[] = { 192, 168, 1, 1 };
 
 #define PREFIX ""
 //WebServer webserver(PREFIX, 80);

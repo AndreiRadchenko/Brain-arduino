@@ -23,12 +23,7 @@
  *    0003 THRESHOLD DONE
  *    0003 BTN: ON
  * 
- *    0003 MODE: CONFIG
- *    0003 MODE: RUN
- *    0003 THRESHOLD DONE
- *    0003 THRESHOLD IS 600
- *    0003 BTN: ON
-*/
+ */
 #include <SoftwareSerial.h>
 
 #define settingsPin 12
@@ -57,7 +52,7 @@ byte incomingByte;
 String readBuffer = "";
 String header;
 String payload;
-String _ID = "01"; //Nano transceiver ID - unique for each Nano-HC-12 accemble
+String _ID = "03"; //Nano transceiver ID - unique for each Nano-HC-12 accemble
 String MASTER_ID = "00";
 
 SoftwareSerial HC12(10,11); // HC-12 TX Pin, HC-12 RX Pin
