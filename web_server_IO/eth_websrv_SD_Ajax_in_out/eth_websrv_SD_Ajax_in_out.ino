@@ -41,7 +41,7 @@
 
 // MAC address from Ethernet shield sticker under board
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-IPAddress ip(192, 168, 0, 20); // IP address, may need to change depending on network
+IPAddress ip(192, 168, 1, 20); // IP address, may need to change depending on network
 EthernetServer server(80);  // create a server at port 80
 File webFile;               // the web page file on the SD card
 char HTTP_req[REQ_BUF_SZ] = {0}; // buffered HTTP request stored as null terminated string

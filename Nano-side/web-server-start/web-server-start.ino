@@ -1,6 +1,7 @@
+
 #include "stdio.h"
 #include "stdlib.h"
-#include "MyNetSetup.h"
+#include <MyNetSetup.h>
 #include <System.h>
 #include <SD.h>
 
@@ -19,8 +20,8 @@ inline Print &operator <<(Print &obj, T arg)
 // CHANGE THIS TO YOUR OWN UNIQUE VALUE
 static uint8_t mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
-// CHANGE THIS TO MATCH YOUR HOST NETWORK
-static uint8_t ip[] = { 192, 168, 1, 1 };
+// CHANGE THIS TO MATCH YOUR HOST NETWORK 
+static uint8_t ip[] = { 192, 168, 1, 21 };
 
 #define PREFIX ""
 //WebServer webserver(PREFIX, 80);
@@ -39,22 +40,8 @@ char ccu_name[12][16];    //string array for ccu names. names length is 16 char
 
 
 void setup() {
-    Serial.begin(19200);       // for debugging
-    
-    // initialize SD card
-    Serial.println("Initializing SD card...");
-    if (!SD.begin(4)) {
-        Serial.println("ERROR - SD card initialization failed!");
-        return;    // init failed
-    }
-    Serial.println("SUCCESS - SD card initialized.");
-    // check for index.htm file
-    if (!SD.exists("index.htm")) {
-        Serial.println("ERROR - Can't find index.htm file!");
-        return;  // can't find index file
-    }
-    Serial.println("SUCCESS - Found index.htm file.");
 
+  initSDcard();
   // put your setup code here, to run once:
   Ethernet.begin(mac, ip);  // initialize Ethernet device
   webserver = new WebServer();
@@ -74,11 +61,29 @@ void loop() {
 
 }
 
+void initSDcard(){
+    Serial.begin(19200);       // for debugging
+    
+    // initialize SD card
+    Serial.println("Initializing SD card...");
+    if (!SD.begin(4)) {
+        Serial.println("ERROR - SD card initialization failed!");
+        return;    // init failed
+    }
+    Serial.println("SUCCESS - SD card initialized.");
+    // check for index.htm file
+    if (!SD.exists("index.htm")) {
+        Serial.println("ERROR - Can't find index.htm file!");
+        return;  // can't find index file
+    }
+    Serial.println("SUCCESS - Found index.htm file.");
+}
+
 void defaultCmd(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete)
 {  
     server.httpSuccess();
     // send web page
-    webFile = SD.open("index.html");        // open web page file
+    webFile = SD.open("index.htm");        // open web page file
     if (webFile) {
         while(webFile.available()) {
         server.write(webFile.read()); // send web page to client
