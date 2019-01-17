@@ -19,11 +19,11 @@
                 var num_mode = this.responseXML.getElementsByTagName('mode').length;
                 //window.alert('num_mode'); 
                 //window.alert(this.responseXML.getElementsByTagName('sensor')[2].childNodes[0].nodeValue);
-                for (count = 0; count < num_mode; count++) {
-                  document.getElementsByClassName("modes")[count].selectedIndex =
-                    this.responseXML.getElementsByTagName('mode')[count].childNodes[0].nodeValue;
-                };
 
+                // for (count = 0; count < num_mode; count++) {
+                //   document.getElementByName("modes")[count].selectedIndex =
+                //     this.responseXML.getElementsByTagName('mode')[count].childNodes[0].nodeValue;
+                // };
                 // get transmitters threshold
                 var num_threshold = this.responseXML.getElementsByTagName('threshold').length;
                 for (count = 0; count < num_threshold; count++) {
@@ -35,53 +35,48 @@
                 // document.getElementById("sensor3").value = 
                 //     this.responseXML.getElementsByTagName('sensor')[2].childNodes[0].nodeValue;
                 var num_sensor = this.responseXML.getElementsByTagName('sensor').length;
-                var sensor_value;
+                
                 for (count = 0; count < num_sensor; count++) {
-                  sensor_value = this.responseXML.getElementsByTagName('sensor')[count].childNodes[0].nodeValue;
-                  document.getElementsByClassName("sensor")[count].value = sensor_value;
-                //set transmitters live_state
-                  if (sensor_value != 0) {
-                        document.getElementsByClassName("live_state")[count].className += " active";
-                  }
-                  else {
-                    document.getElementsByClassName("live_state")[count].className = 
-                            document.getElementsByClassName("live_state")[count].className.replace( /(?:^|\s)active(?!\S)/g , '' ); 
-                  }
-                    
+                  document.getElementsByClassName("sensor")[count].value =
+                    this.responseXML.getElementsByTagName('sensor')[count].childNodes[0].nodeValue;
                 };
-                //get transmitters battery
-                var num_battery = this.responseXML.getElementsByTagName('battery').length;
-                var battepy_percent = 0;
-                for (count = 0; count < num_battery; count++) {
-                  battepy_percent = this.responseXML.getElementsByTagName('battery')[count].childNodes[0].nodeValue;
-                  battepy_percent = (battepy_percent - 3800)/4;
-                  document.getElementsByClassName("battery")[count].value = battepy_percent;   
-                };
- 
+                // get transmitters battery
+                // var num_battery = this.responseXML.getElementsByTagName('battery').length;
+                // var battepy_percent = 0;
+                // for (count = 0; count < num_battery; count++) {
+                //   battepy_percent = this.responseXML.getElementsByTagName('battery')[count].childNodes[0].nodeValue;
+                //   battepy_percent = (battepy_percent - 3800)/4;
+                //   document.getElementById("battery")[count].value = battepy_percent;   
+                // };
+                  
                 // get transmitters laser state
-                // <a class="laser_button_class">Laser Crossed</a>
-                // <a class="button_pressed_class">Button Pressed</a>
-                var num_laser_crossed = this.responseXML.getElementsByTagName('laser_crossed').length;
-                var laser_crossed;
-                for (count = 0; count < num_laser_crossed; count++) {
-                  laser_crossed = this.responseXML.getElementsByTagName('laser_crossed')[count].childNodes[0].nodeValue;
-                  if (laser_crossed == 1)
-                      document.getElementsByClassName("laser_button_class")[count].className += " active";
-                  else 
-                      document.getElementsByClassName("laser_button_class")[count].className = 
-                        document.getElementsByClassName("laser_button_class")[count].className.replace( /(?:^|\s)active(?!\S)/g , '' );      
-                };
+                // var num_laser_crossed = this.responseXML.getElementsByTagName('laser_crossed').length;
+                // var laser_crossed;
+                // for (count = 0; count < num_laser_crossed; count++) {
+                //   laser_crossed = this.responseXML.getElementsByTagName('laser_crossed')[count].childNodes[0].nodeValue;
+                //   if (laser_crossed)
+                //   document.getElementsByClassName("form_sensor")[count]
+                //       .getElementsByClassName("laser_button").className += " active";
+                //   else 
+                //   document.getElementsByClassName("form_sensor")[count]
+                //       .getElementsByClassName("laser_button").className = 
+                //               document.getElementsByClassName("form_sensor")[count]
+                //               .getElementsByClassName("laser_button").className.replace( /(?:^|\s)active(?!\S)/g , '' );      
+                // };
                 // get transmitters button state
-                var num_button_pressed = this.responseXML.getElementsByTagName('button_pressed').length;
-                var button_pressed;
-                for (count = 0; count < num_button_pressed; count++) {
-                  button_pressed = this.responseXML.getElementsByTagName('button_pressed')[count].childNodes[0].nodeValue;
-                  if (button_pressed == 1)
-                      document.getElementsByClassName("button_pressed_class")[count].className += " active";
-                  else 
-                      document.getElementsByClassName("button_pressed_class")[count].className = 
-                        document.getElementsByClassName("button_pressed_class")[count].className.replace( /(?:^|\s)active(?!\S)/g , '' );      
-                };
+                // var num_button_pressed = this.responseXML.getElementsByTagName('button_pressed').length;
+                // var button_pressed;
+                // for (count = 0; count < num_button_pressed; count++) {
+                //   button_pressed = this.responseXML.getElementsByTagName('button_pressed')[count].childNodes[0].nodeValue;
+                //   if (button_pressed)
+                //   document.getElementsByClassName("form_sensor")[count]
+                //       .getElementsByClassName("button_button").className += " active";
+                //   else 
+                //   document.getElementsByClassName("form_sensor")[count]
+                //       .getElementsByClassName("button_button").className = 
+                //               document.getElementsByClassName("form_sensor")[count]
+                //               .getElementsByClassName("laser_button").className.replace( /(?:^|\s)active(?!\S)/g , '' );      
+                // };
               }
             }
           }
@@ -96,14 +91,6 @@
         document.getElementById("sensor3").value = "2";
       }
 
-      function send_transmitter_mode(trans, mode){
-        //window.alert(trans + " = " + mode);
-        var xhr = new XMLHttpRequest();
-        var body = trans + '=' + mode;
-        xhr.open('POST', '/send_transmitter_mode', true);
-        xhr.setRequestHeader('Content-Type', 'text-plain');
-        xhr.send(body);  
-      }
     </script>
 
     <style>
@@ -214,7 +201,7 @@
           color: rgb(46, 44, 44);
           padding: 5px 5px 5px 5px;
           text-decoration: none;
-          transition: background-color .1s;
+          transition: background-color .3s;
           background-color: rgb(131, 123, 123);
           margin: 0px 5px 0px 5px;
         }
@@ -346,10 +333,10 @@
 </div>
 
 <div class="pagination">
-  <a class="live_state">1</a>
-  <a class="live_state">2</a>
-  <a class="live_state">3</a>
-  <a class="live_state">4</a>
+  <a id="id1" class="active">1</a>
+  <a id="id2" class="">2</a>
+  <a id="id3">3</a>
+  <a id="id4">4</a>
 </div>
 
 
@@ -366,16 +353,15 @@
     <h2><span class="transmitter_name">Transmitter 1</span></h2>
 
     <div class="laser_button">
-        <a class="laser_button_class">Laser Crossed</a>
-        <a class="button_pressed_class">Button Pressed</a>
+        <a id="laser_button" class="active">Laser Crossed</a>
+        <a id="button_button" class="">Button Pressed</a>
     </div><br />
 
     <label for="battery">Battery level: </label>
-    <progress id="battery" class="battery" value="0" max="100" ></progress><br />
+    <progress id="battery" name="battery" value="50" max="100" ></progress><br />
 
       <label for="modes">Mode: </label>
-      <select class="modes" id="select_modes1" onchange=
-      "send_transmitter_mode(1, document.getElementById('select_modes1').selectedIndex)">
+      <select name="modes" onchange="">
         <option selected>Calibration</option>
         <option >Run</option>
         <option>Config</option>
@@ -408,16 +394,15 @@
 <div class="out_box">
       <h2><span class="transmitter_name">Transmitter 2</span></h2>
       <div class="laser_button">
-        <a class="laser_button_class">Laser Crossed</a>
-        <a class="button_pressed_class">Button Pressed</a>
+          <a id="laser_button" class="">Laser Crossed</a>
+          <a id="button_button" class="">Button Pressed</a>
       </div><br />
   
       <label for="battery">Battery level: </label>
-      <progress id="battery" class="battery" value="0" max="100" ></progress><br />
+      <progress id="battery" name="battery" value="0" max="100" ></progress><br />
   
         <label for="modes">Mode: </label>
-        <select class="modes" id="select_modes2" onchange=
-        "send_transmitter_mode(2, document.getElementById('select_modes2').selectedIndex)">
+        <select name="modes" onchange="">
           <option selected>Calibration</option>
           <option>Run</option>
           <option>Config</option>
@@ -448,16 +433,15 @@
 <div class="out_box">
       <h2><span class="transmitter_name">Transmitter 3</span></h2>
       <div class="laser_button">
-        <a class="laser_button_class">Laser Crossed</a>
-        <a class="button_pressed_class">Button Pressed</a>
+          <a id="laser_button" class="">Laser Crossed</a>
+          <a id="button_button" class="">Button Pressed</a>
       </div><br />
   
       <label for="battery">Battery level: </label>
-      <progress id="battery" class="battery" value="0" max="100" ></progress><br />
+      <progress id="battery" name="battery" value="0" max="100" ></progress><br />
   
         <label for="modes">Mode: </label>
-        <select class="modes" id="select_modes3" onchange=
-        "send_transmitter_mode(3, document.getElementById('select_modes3').selectedIndex)">
+        <select name="modes" onchange="">
           <option selected>Calibration</option>
           <option>Run</option>
           <option>Config</option>
@@ -488,16 +472,15 @@
 <div class="out_box">
       <h2><span class="transmitter_name">Transmitter 4</span></h2>
       <div class="laser_button">
-        <a class="laser_button_class">Laser Crossed</a>
-        <a class="button_pressed_class">Button Pressed</a>
+          <a id="laser_button" class="">Laser Crossed</a>
+          <a id="button_button" class="">Button Pressed</a>
       </div><br />
   
       <label for="battery">Battery level: </label>
-      <progress id="battery" class="battery" value="0" max="100" ></progress><br />
+      <progress id="battery" name="battery" value="0" max="100" ></progress><br />
   
         <label for="modes">Mode: </label>
-        <select class="modes" id="select_modes4" onchange=
-        "send_transmitter_mode(4, document.getElementById('select_modes4').selectedIndex)">
+        <select name="modes" onchange="">
           <option selected>Calibration</option>
           <option>Run</option>
           <option>Config</option>

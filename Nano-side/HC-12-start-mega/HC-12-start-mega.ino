@@ -34,7 +34,7 @@ struct TransmitterState
 {
 int8_t id = 0;
 int8_t mode = 0;
-int threshold = 500;
+int threshold = 0;
 int sensor = 0;
 int battery = 0;
 bool laser_crossed = false;
@@ -93,6 +93,7 @@ void setup() {
 
   webserver->setDefaultCommand(&defaultCmd);
   webserver->addCommand("getAJAXxml", &getAJAXxmlCmd); 
+  webserver->addCommand("send_transmitter_mode", &sendTransmitterModeCmd);
     /* start the webserver */
   webserver->begin(); 
 
@@ -184,7 +185,7 @@ void parseReplay(String readBuffer) {
   int numbers[4];
   int j;
   int id;
-  id = readBuffer.substring(0, 4).toInt();
+  id = readBuffer.substring(0, 4).toInt() - 1;
   #ifdef DEBAG
     Serial.print("id: ");
     Serial.println(id);
@@ -231,6 +232,6 @@ void parseReplay(String readBuffer) {
     transmittersState[id].threshold = numbers[0];
     transmittersState[id].sensor = numbers[1];
     transmittersState[id].battery = numbers[2];
-    transmittersState[id].button_pressed = numbers[3] == 0) ? true : false;
+    transmittersState[id].button_pressed = (numbers[3] == 0) ? true : false;
   }
 }
