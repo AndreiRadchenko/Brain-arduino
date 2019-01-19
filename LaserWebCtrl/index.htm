@@ -25,20 +25,22 @@
                 };
 
                 // get transmitters threshold
-                var num_threshold = this.responseXML.getElementsByTagName('threshold').length;
-                for (count = 0; count < num_threshold; count++) {
-                  document.getElementsByClassName("threshold")[count].value =
-                    this.responseXML.getElementsByTagName('threshold')[count].childNodes[0].nodeValue;
-                };
+                // var num_threshold = this.responseXML.getElementsByTagName('threshold').length;
+                // for (count = 0; count < num_threshold; count++) {
+                //   document.getElementsByClassName("threshold")[count].value =
+                //     this.responseXML.getElementsByTagName('threshold')[count].childNodes[0].nodeValue;
+                // };
 
                 // get transmitters sensor
                 // document.getElementById("sensor3").value = 
                 //     this.responseXML.getElementsByTagName('sensor')[2].childNodes[0].nodeValue;
                 var num_sensor = this.responseXML.getElementsByTagName('sensor').length;
                 var sensor_value;
+                var threshold_value;
                 for (count = 0; count < num_sensor; count++) {
                   sensor_value = this.responseXML.getElementsByTagName('sensor')[count].childNodes[0].nodeValue;
-                  document.getElementsByClassName("sensor")[count].value = sensor_value;
+                  threshold_value = this.responseXML.getElementsByTagName('threshold')[count].childNodes[0].nodeValue;
+                  document.getElementsByClassName("sensor")[count].value = sensor_value + " / " + threshold_value;
                 //set transmitters live_state
                   if (sensor_value != 0) {
                         document.getElementsByClassName("live_state")[count].className += " active";
@@ -89,11 +91,23 @@
         xhr.open('POST', '/getAJAXxml', true);
         xhr.setRequestHeader('Content-Type', 'text-plain');
         xhr.send(body);
-        setTimeout('getAJAXxml()', 5000); 
+        setTimeout('getAJAXxml()', 1000); 
       }
 
-      function myFunction(){
-        document.getElementById("sensor3").value = "2";
+      function sendThresholdValue(e, trnsmitterId){
+          //window.alert(trnsmitterId); 
+          e.preventDefault();
+          if (e.keyCode === 13) {
+              //window.alert('Set Threshold1'); 
+              var xhr = new XMLHttpRequest();
+              var body = (trnsmitterId+1) + '=' + 
+                        document.getElementsByClassName("threshold")[trnsmitterId].value;
+              xhr.open('POST', '/send_threshold_value', true);
+              xhr.setRequestHeader('Content-Type', 'text-plain');
+              xhr.send(body); 
+          }
+        
+        //window.alert(trnsmitterId + "-" + thresholdValue);
       }
 
       function send_transmitter_mode(trans, mode){
@@ -104,6 +118,9 @@
         xhr.setRequestHeader('Content-Type', 'text-plain');
         xhr.send(body);  
       }
+
+
+
     </script>
 
     <style>
@@ -376,16 +393,18 @@
       <label for="modes">Mode: </label>
       <select class="modes" id="select_modes1" onchange=
       "send_transmitter_mode(1, document.getElementById('select_modes1').selectedIndex)">
-        <option selected>Calibration</option>
+        <option >Calibration</option>
         <option >Run</option>
         <option>Config</option>
       </select><br />
 
-    <label for="sensor1">Sensor value: </label>
+    <label for="sensor1">Sensor data: </label>
     <input type="text" id="sensor1" class="sensor" value="0" disabled><br />
 
-    <label for="threshold">Threshold: </label>
-    <input type="text" id="threshold" class="threshold" value="0"><br />
+    <label for="threshold">Set threshold: </label>
+    <input type="text" id="threshold1" class="threshold" value="0" min="0" max="1024" 
+              onkeyup="sendThresholdValue(event, 0)"><br />
+              <!-- Sending event for recognition pressing enter key -->
     
     
     <div class="osc"> <br />
@@ -418,16 +437,18 @@
         <label for="modes">Mode: </label>
         <select class="modes" id="select_modes2" onchange=
         "send_transmitter_mode(2, document.getElementById('select_modes2').selectedIndex)">
-          <option selected>Calibration</option>
+          <option >Calibration</option>
           <option>Run</option>
           <option>Config</option>
         </select><br />
   
-      <label for="sensor2">Sensor value: </label>
+      <label for="sensor2">Sensor data: </label>
       <input type="text" id="sensor2" class="sensor" value="0" disabled><br />
   
-      <label for="threshold">Threshold: </label>
-      <input type="text" id="threshold" class="threshold" value="0"><br />
+      <label for="threshold">Set threshold: </label>
+      <input type="text" id="threshold2" class="threshold" value="0" min="0" max="1024" 
+      onkeyup="sendThresholdValue(event, 1)"><br />
+      <!-- Sending event for recognition pressing enter key -->
       
       
       <div class="osc"> <br />
@@ -458,16 +479,18 @@
         <label for="modes">Mode: </label>
         <select class="modes" id="select_modes3" onchange=
         "send_transmitter_mode(3, document.getElementById('select_modes3').selectedIndex)">
-          <option selected>Calibration</option>
+          <option >Calibration</option>
           <option>Run</option>
           <option>Config</option>
         </select><br />
   
-      <label for="sensor3">Sensor value: </label>
+      <label for="sensor3">Sensor data: </label>
       <input type="text" id="sensor3" class="sensor" value="0" disabled><br />
   
-      <label for="threshold">Threshold: </label>
-      <input type="text" id="threshold" class="threshold" value="0"><br />
+      <label for="threshold">Set threshold: </label>
+      <input type="text" id="threshold3" class="threshold" value="0" min="0" max="1024" 
+      onkeyup="sendThresholdValue(event, 2)"><br />
+      <!-- Sending event for recognition pressing enter key -->
       
       
       <div class="osc"> <br />
@@ -498,16 +521,18 @@
         <label for="modes">Mode: </label>
         <select class="modes" id="select_modes4" onchange=
         "send_transmitter_mode(4, document.getElementById('select_modes4').selectedIndex)">
-          <option selected>Calibration</option>
+          <option >Calibration</option>
           <option>Run</option>
           <option>Config</option>
         </select><br />
   
-      <label for="sensor4">Sensor value: </label>
+      <label for="sensor4">Sensor data: </label>
       <input type="text" id="sensor4" class="sensor" value="0" disabled><br />
   
-      <label for="threshold">Threshold: </label>
-      <input type="text" id="threshold" class="threshold" value="0"><br />
+      <label for="threshold">Set threshold: </label>
+      <input type="text" id="threshold4" class="threshold" value="0" min="0" max="1024" 
+      onkeyup="sendThresholdValue(event, 3)"><br />
+      <!-- Sending event for recognition pressing enter key -->
       
       
       <div class="osc"> <br />
@@ -530,6 +555,17 @@
   <p>Resize the browser window to see the effect.</p>
   <p>Some content..</p>
 </div-->
+
+<script>
+    // var treshold1 = document.getElementsByClassName("threshold")[0];
+    // treshold1.addEventListener("keyup", function(event) {
+    //   event.preventDefault();
+    //   if (event.keyCode === 13) {
+    //     //window.alert('Set Threshold1'); 
+    //     sendThresholdValue(0);
+    //   }
+    // });
+</script>
 
 </body>
 </html>

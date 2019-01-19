@@ -79,24 +79,19 @@ void defaultCmd(WebServer &server, WebServer::ConnectionType type, char *url_tai
 
 void getAJAXxmlCmd(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete)
 {
+  unsigned long duration = millis();
+  
   int count;                 // used by 'for' loops
   
   server.println("HTTP/1.1 200 OK");
   
   if (type == WebServer::POST)
   {    
-    Serial.println("getAJAXxmlCmd() responce");
+    //Serial.println("getAJAXxmlCmd() responce");
     server.println("Content-Type: text/xml");
     server.println("Connection: keep-alive");
 
     server.println();
-    
-//    bool repeat;
-//    char pname[16];
-//    char value[16];
-//    int  ch_number;
-//
-//    repeat = server.readPOSTparam(pname, 16, value, 16);
 
     server << "<?xml version = \"1.0\" ?>";
     server << "<transmitters>";
@@ -117,22 +112,16 @@ void getAJAXxmlCmd(WebServer &server, WebServer::ConnectionType type, char *url_
     for (count = 0; count < 4; count++)
         server << "<button_pressed>" << transmittersState[count].button_pressed << "</button_pressed>"; 
     server << "</transmitters>";             
-  }
+  };
+   
 
-  //erase transmitters state fore watching they live state
-  //if we receive traтsmitter's next data - he are live
-    for (count = 0; count < 4; count++) {
-      transmittersState[count].threshold = 0;
-      transmittersState[count].sensor = 0;
-      transmittersState[count].battery = 0;
-      transmittersState[count].laser_crossed = 0;
-      transmittersState[count].button_pressed = 0;
-    }      
-  
+    duration = millis() - duration;
+    Serial.print("getAJAXxmlCmd() finishad with ");
+    Serial.println(duration);
 }  
 
 void sendTransmitterModeCmd(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete)
-{
+{ 
   server.println("HTTP/1.1 200 OK");
   
   if (type == WebServer::POST)
@@ -141,7 +130,9 @@ void sendTransmitterModeCmd(WebServer &server, WebServer::ConnectionType type, c
     char pname[16];
     char value[16];
     String serialbuff = "0";
-    Serial.println("sendTransmitterModeCmd() replay");
+    int id;
+    
+    Serial.println("sendTransmitterModeCmd() statrt");
     do
     {
       repeat = server.readPOSTparam(pname, 16, value, 16);     
@@ -153,7 +144,17 @@ void sendTransmitterModeCmd(WebServer &server, WebServer::ConnectionType type, c
        serialbuff += "00MODE-";
        serialbuff += value;
        Serial.println(serialbuff);
+       //Serial.println(String(pname).toInt());
        Serial1.print(serialbuff);
+       
+//       //reset transmitter data
+//       id = String(pname).toInt()-1;
+//       transmittersState[id].threshold = 0;
+//       transmittersState[id].sensor = 0;
+//       transmittersState[id].battery = 0;
+//       transmittersState[id].laser_crossed = 0;
+//       transmittersState[id].button_pressed = 0;
+       
 //       switch (pname)
 //          {
 //             case 1:
@@ -184,7 +185,42 @@ void sendTransmitterModeCmd(WebServer &server, WebServer::ConnectionType type, c
 //    outputPins(server, type, false);
 };
   
+void sendTransmitterThresholdCmd(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete)
+{ 
+  server.println("HTTP/1.1 200 OK");
+  
+  if (type == WebServer::POST)
+  {    
+    bool repeat;
+    char pname[16];
+    char value[16];
+    String serialbuff = "0";
+    int id;
+    
+    Serial.println("sendTransmitterThreshold()");
+    do
+    {
+      repeat = server.readPOSTparam(pname, 16, value, 16);     
 
+      if (repeat)
+     {
+       serialbuff += pname;
+       serialbuff += "00THRESHOLD-";
+       serialbuff += value;
+       Serial.println(serialbuff);
+       //Serial.println(String(pname).toInt());
+       Serial1.print(serialbuff);
+
+
+      };
+    } while (repeat);
+    
+//    server.httpSeeOther(PREFIX "/form");
+  }
+  else
+  ;
+//    outputPins(server, type, false);
+};
 
 /*  to-do fuction for set mode for all transmitter
  *  shuld perfom sequentalli sending 0100MODE-X 0200MODE-X ..

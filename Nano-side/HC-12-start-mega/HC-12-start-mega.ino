@@ -40,13 +40,14 @@ int battery = 0;
 bool laser_crossed = false;
 bool button_pressed = false;
 String OSC_IP = "192.168.1.1"; 
-String OSC_command = "test";    
+String OSC_command = "test";  
+unsigned long lastUpdate = 0;  
 } mTransmitterState;
 
 TransmitterState transmittersState[4];
 
 // Mode types supported:
-enum  mode {LASER_CONFIG, LASER_RUN};
+enum  mode {LASER_CALIBRATION, LASER_RUN, LASER_CONFIG};
 
 mode activeMode = LASER_CONFIG;
 
@@ -55,6 +56,8 @@ unsigned long lastUpdate; // last update of position
 
 #define setPin 22
 
+unsigned long trustedLiveInterval = 5000; //reset transmitter state interval 10 sec
+unsigned long lastReset = 0;
 byte incomingByte;
 String readBuffer = "";
 String header;
@@ -93,7 +96,9 @@ void setup() {
 
   webserver->setDefaultCommand(&defaultCmd);
   webserver->addCommand("getAJAXxml", &getAJAXxmlCmd); 
-  webserver->addCommand("send_transmitter_mode", &sendTransmitterModeCmd);
+  webserver->addCommand("send_transmitter_mode", &sendTransmitterModeCmd); 
+  webserver->addCommand("send_threshold_value", &sendTransmitterThresholdCmd); 
+  
     /* start the webserver */
   webserver->begin(); 
 
@@ -101,12 +106,32 @@ void setup() {
 
 void loop() {
 
+//  unsigned long duration = millis();
   char buff[200];
   int len = 200;
    /* process incoming connections one at a time forever */
   webserver->processConnection(buff, &len);
 
   readBuffer = "";                       // Clear readBuffer
+
+  
+  //erase transmitters state every trustedLiveInterval sec fore watching they live state
+  //if we receive traтsmitter's next data - he are live
+  if ((millis()-lastReset) > trustedLiveInterval)
+     {
+        for (int count = 0; count < 4; count++) {
+          if ((millis() - transmittersState[count].lastUpdate) >  trustedLiveInterval) {
+             transmittersState[count].threshold = 0;
+             transmittersState[count].sensor = 0;
+             transmittersState[count].battery = 0;
+             transmittersState[count].laser_crossed = 0;
+             transmittersState[count].button_pressed = 0;
+          }
+
+        };
+        
+        lastReset = millis();
+     };
 
   if (Serial.available()) {
     delay(100);
@@ -121,7 +146,7 @@ void loop() {
   }
 
   else if (Serial1.available()) {
-    delay(40);
+    delay(20);
     while (Serial1.available()) {        // If HC-12 has data
       incomingByte = Serial1.read();          // Store each icoming byte from HC-12
       readBuffer += char(incomingByte);    // Add each byte to ReadBuffer string variable
@@ -134,9 +159,11 @@ void loop() {
   else {
     
   };
-
-  
-
+//  #ifdef DEBAG
+//    duration = millis() - duration;
+//    Serial.print("loop duration ");
+//    Serial.println(duration);
+//  #endif
 }
 
 // ==== Custom function - Check whether we have received an AT Command via the Serial Monitor
@@ -210,6 +237,17 @@ void parseReplay(String readBuffer) {
     Serial.print("mode: ");    
     Serial.println(transmittersState[id].mode);
     #endif
+
+    if (transmittersState[id].mode != 0) { //switch to mode differences from LASER_CALIBRATION
+          transmittersState[id].threshold = 0;
+          transmittersState[id].sensor = 0;
+          transmittersState[id].battery = 0;
+          transmittersState[id].laser_crossed = false;
+          transmittersState[id].button_pressed = false;
+          transmittersState[id].lastUpdate = millis();
+          return;
+    }
+    
     readBuffer = readBuffer.substring(2); //cat mode from message
     j = 0;
     #ifdef DEBAG
@@ -233,5 +271,6 @@ void parseReplay(String readBuffer) {
     transmittersState[id].sensor = numbers[1];
     transmittersState[id].battery = numbers[2];
     transmittersState[id].button_pressed = (numbers[3] == 0) ? true : false;
+    transmittersState[id].lastUpdate = millis();
   }
 }

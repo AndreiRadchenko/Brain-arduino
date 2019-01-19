@@ -52,7 +52,7 @@ byte incomingByte;
 String readBuffer = "";
 String header;
 String payload;
-String _ID = "01"; //Nano transceiver ID - unique for each Nano-HC-12 accemble
+String _ID = "04"; //Nano transceiver ID - unique for each Nano-HC-12 accemble
 String MASTER_ID = "00";
 
 SoftwareSerial HC12(10,11); // HC-12 TX Pin, HC-12 RX Pin
