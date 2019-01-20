@@ -98,7 +98,8 @@ void setup() {
   webserver->addCommand("getAJAXxml", &getAJAXxmlCmd); 
   webserver->addCommand("send_transmitter_mode", &sendTransmitterModeCmd); 
   webserver->addCommand("send_threshold_value", &sendTransmitterThresholdCmd); 
-  
+  webserver->addCommand("send_osc_parameters", &sendOSCparametersCmd); 
+    
     /* start the webserver */
   webserver->begin(); 
 

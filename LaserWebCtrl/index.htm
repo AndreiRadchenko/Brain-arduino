@@ -119,6 +119,16 @@
         xhr.send(body);  
       }
 
+      function send_osc_parameters(trnsmitterId){
+        //window.alert(trans + " = " + mode);
+        var xhr = new XMLHttpRequest(); 
+        var oscip = document.getElementsByClassName("osc_ip")[trnsmitterId].value;
+        var osccommand = document.getElementsByClassName("osc_command")[trnsmitterId].value;
+        xhr.open('POST', '/send_osc_parameters', true);
+        xhr.setRequestHeader('Content-Type', 'text-plain');
+        var body = trnsmitterId + '=' + oscip + ";" + osccommand;
+        xhr.send(body);
+      }
 
 
     </script>
@@ -409,15 +419,15 @@
     
     <div class="osc"> <br />
         <h2>OSC settings:</h2>
-        <form class="osc" name="OSC">
+        
             OSC IP:<br>
-            <input type="text" name="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+            <input type="text" class="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
             <br>
             OSC Command:<br>
-            <input type="text" name="osc_command" value="">
+            <input type="text" class="osc_command" value="">
             <br><br>
-            <input type="submit" value="Submit" style="float:initial">
-        </form>
+            <input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(0)">
+        
     </div>
 
 
@@ -453,15 +463,13 @@
       
       <div class="osc"> <br />
           <h2>OSC settings:</h2>
-          <form class="osc" name="OSC">
-              OSC IP:<br>
-              <input type="text" name="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
-              <br>
-              OSC Command:<br>
-              <input type="text" name="osc_command" value="">
-              <br><br>
-              <input type="submit" value="Submit" style="float:initial">
-          </form>
+          OSC IP:<br>
+          <input type="text" class="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+          <br>
+          OSC Command:<br>
+          <input type="text" class="osc_command" value="">
+          <br><br>
+          <input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(1)">
       </div>  
   
 </div>
@@ -495,15 +503,13 @@
       
       <div class="osc"> <br />
           <h2>OSC settings:</h2>
-          <form class="osc" name="OSC">
-              OSC IP:<br>
-              <input type="text" name="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
-              <br>
-              OSC Command:<br>
-              <input type="text" name="osc_command" value="">
-              <br><br>
-              <input type="submit" value="Submit" style="float:initial">
-          </form>
+          OSC IP:<br>
+          <input type="text" class="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+          <br>
+          OSC Command:<br>
+          <input type="text" class="osc_command" value="">
+          <br><br>
+          <input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(2)">
       </div>
 
 </div>
@@ -537,15 +543,13 @@
       
       <div class="osc"> <br />
           <h2>OSC settings:</h2>
-          <form class="osc" name="OSC">
-              OSC IP:<br>
-              <input type="text" name="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
-              <br>
-              OSC Command:<br>
-              <input type="text" name="osc_command" value="">
-              <br><br>
-              <input type="submit" value="Submit" style="float:initial">
-          </form>
+          OSC IP:<br>
+          <input type="text" class="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
+          <br>
+          OSC Command:<br>
+          <input type="text" class="osc_command" value="">
+          <br><br>
+          <input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(3)">
       </div>
     </div>
 </div>

@@ -222,6 +222,64 @@ void sendTransmitterThresholdCmd(WebServer &server, WebServer::ConnectionType ty
 //    outputPins(server, type, false);
 };
 
+void sendOSCparametersCmd(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete)
+{ 
+  server.println("HTTP/1.1 200 OK");
+  
+  if (type == WebServer::POST)
+  {    
+    bool repeat;
+    char pname[16];
+    char value[128];
+    String buffName = "";
+    String buffValue = "";
+    //String buff;
+    int index;
+    int id;
+    
+    Serial.println("sendTransmitterThreshold()");
+    do
+    {
+      repeat = server.readPOSTparam(pname, 16, value, 128);     
+
+      if (repeat)
+     {
+       buffName = String(pname);
+       buffValue = String(value);
+       
+       id = buffName.toInt();
+       index = buffValue.indexOf(';');
+       transmittersState[id].OSC_IP = buffValue.substring(0, index);
+       transmittersState[id].OSC_command = buffValue.substring(index+1);
+      
+//       for (int i=0; i <= buffValue.length(); i++) {
+//           //simbol = readBuffer.charAt(i);
+//           if (buffValue.charAt(i) != ';') {
+//              buff += buffValue.charAt(i);
+//           }
+//           else {
+//              transmittersState[id].OSC_IP = buff;
+//              transmittersState[id].OSC_command = buffValue.substring(i+1);
+//              break; 
+//           };
+//       }
+
+      };
+    } while (repeat);
+
+    Serial.print("transmitterID: ");
+    Serial.println(id);
+    Serial.print("OSC_IP: ");
+    Serial.println(transmittersState[id].OSC_IP);
+    Serial.print("OSC_command: ");
+    Serial.println(transmittersState[id].OSC_command);    
+//    server.httpSeeOther(PREFIX "/form");
+  }
+  else
+  ;
+//    outputPins(server, type, false);
+};
+
 /*  to-do fuction for set mode for all transmitter
  *  shuld perfom sequentalli sending 0100MODE-X 0200MODE-X ..
  *  command with delay betwin command
