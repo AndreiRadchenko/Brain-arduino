@@ -29,6 +29,13 @@
 #include <MyNetSetup.h>
 #include <System.h>
 #include <SD.h>
+#include <EthernetUdp.h>
+#include <SPI.h> 
+#include <OSCMessage.h>
+#include <OSCBundle.h>
+#include <ArduinoJson.h>
+
+EthernetUDP Udp;
 
 struct TransmitterState
 {
@@ -39,12 +46,15 @@ int sensor = 0;
 int battery = 0;
 bool laser_crossed = false;
 bool button_pressed = false;
-String OSC_IP = "192.168.1.1"; 
-String OSC_command = "test";  
+String OSC_IP = "192.168.1.100"; 
+String OSC_Port = "9999"; 
+String OSC_adress = "/test";
+String OSC_command = "on";  
 unsigned long lastUpdate = 0;  
 } mTransmitterState;
 
 TransmitterState transmittersState[4];
+const char *configfile = "config.txt";  // <- SD library uses 8.3 filenames
 
 // Mode types supported:
 enum  mode {LASER_CALIBRATION, LASER_RUN, LASER_CONFIG};
@@ -72,6 +82,10 @@ static uint8_t mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 // CHANGE THIS TO MATCH YOUR HOST NETWORK
 static uint8_t ip[] = { 192, 168, 1, 21 };
 
+//port numbers
+unsigned int udpOutPort = 9999;
+const unsigned int udpInPort = 8888;
+
 #define PREFIX ""
 //WebServer webserver(PREFIX, 80);
 
@@ -82,6 +96,8 @@ File webFile;               // the web page file on the SD card
 //SoftwareSerial HC12(10,11); // HC-12 TX Pin, HC-12 RX Pin
 
 void setup() {
+  // put your setup code here, to run once:
+  
   Serial.begin(19200);             // Serial port to computer
   Serial1.begin(19200);               // Serial port to HC12
   pinMode(setPin, OUTPUT);
@@ -90,8 +106,10 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
 
   initSDcard();
-  // put your setup code here, to run once:
+  loadConfiguration(configfile);
+   
   Ethernet.begin(mac, ip);  // initialize Ethernet device
+  Udp.begin(udpInPort);
   webserver = new WebServer();
 
   webserver->setDefaultCommand(&defaultCmd);
@@ -99,6 +117,7 @@ void setup() {
   webserver->addCommand("send_transmitter_mode", &sendTransmitterModeCmd); 
   webserver->addCommand("send_threshold_value", &sendTransmitterThresholdCmd); 
   webserver->addCommand("send_osc_parameters", &sendOSCparametersCmd); 
+  webserver->addCommand("osc_form", &oscFormCmd); 
     
     /* start the webserver */
   webserver->begin(); 
@@ -112,6 +131,8 @@ void loop() {
   int len = 200;
    /* process incoming connections one at a time forever */
   webserver->processConnection(buff, &len);
+
+  //receiveOSCcommand(); //process OSC over UDP command receiving
 
   readBuffer = "";                       // Clear readBuffer
 
@@ -210,9 +231,11 @@ void parseReplay(String readBuffer) {
 
   //TransmitterState mtState;
   String buff = "";
+  String commandbuff = "";
   int numbers[4];
   int j;
   int id;
+  commandbuff += readBuffer.substring(2, 4);
   id = readBuffer.substring(0, 4).toInt() - 1;
   #ifdef DEBAG
     Serial.print("id: ");
@@ -223,12 +246,20 @@ void parseReplay(String readBuffer) {
   if (readBuffer.startsWith("THRESHOLD DONE")) {
     //to-do perfome immediatle call to osc and web client
     transmittersState[id].laser_crossed = true;
+    sendOSCommand(id);
+/*    
+ *   commandbuff += "00MODE-1";     //return sensor to run mode
+ *   delay(100);
+ *   Serial.println(commandbuff);
+ *   Serial1.print(commandbuff); 
+*/   
     return;
   }
 
   else if (readBuffer.startsWith("BTN: ON")) {
     //to-do perfome immediatle call to osc and web client
     transmittersState[id].button_pressed = true;
+    sendOSCommand(id);
     return;
   }
 
@@ -272,6 +303,7 @@ void parseReplay(String readBuffer) {
     transmittersState[id].sensor = numbers[1];
     transmittersState[id].battery = numbers[2];
     transmittersState[id].button_pressed = (numbers[3] == 0) ? true : false;
+    transmittersState[id].laser_crossed = (numbers[4] == 1) ? true : false;
     transmittersState[id].lastUpdate = millis();
   }
 }

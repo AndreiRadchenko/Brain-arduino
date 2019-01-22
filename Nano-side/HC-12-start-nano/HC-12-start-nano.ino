@@ -18,8 +18,8 @@
  *                  0100THRESHOLD     -> get light sensor threshold level
  * 
  *    Sending sequence
- *    0003 MODE: RUN THRES: 600 SENSOR: 555 VSS: 3999 BTN: OFF //OFF->1 ON->0
- *    0003;0;600;555;3999;1;
+ *    0003 MODE: RUN THRES: 600 SENSOR: 555 VSS: 3999 BTN: OFF LASERCROSS 1//OFF->1 ON->0
+ *    0003;0;600;555;3999;1;1;
  *    0003 THRESHOLD DONE
  *    0003 BTN: ON
  * 
@@ -42,6 +42,9 @@ long vssValue = 0;
 
 int buttonState = HIGH;             // the current reading from the input pin
 int lastButtonState = HIGH;   // the previous reading from the input pin
+
+int laserCrossState = 1;             // the current reading from the light sensor, 1- laser crossed
+int lastlaserCrossState = 1;   // the previous reading from the light sensor
 
 // the following variables are unsigned longs because the time, measured in
 // milliseconds, will quickly become a bigger number than can be stored in an int.
@@ -72,6 +75,7 @@ void loop() {
 
   //sensorValue = analogRead(sensorPin);
   readButtonState(); 
+  readLaserState();
   readBuffer = "";                       // Clear readBuffer
 
   if (Serial.available()) {
@@ -113,7 +117,7 @@ void loop() {
                 }
             break;
           case LASER_RUN:
-            checkLaserCross();
+            //checkLaserCross();
             break;
           case LASER_CONFIG:
             delay(50);
@@ -238,7 +242,7 @@ void checkLaserCross() {
         while (activeMode == LASER_RUN) {    //wait for transmission available
               if (!HC12.available()) {
                  HC12.print(payload);
-                 delay(100);
+                 delay(20);
                  activeMode = LASER_CALIBRATION;
               }
         }
@@ -276,13 +280,13 @@ void readButtonState() {
             sprintf(serialbuff, " BTN: ON");
             payload.concat(serialbuff);
             Serial.println(payload);
-            while (activeMode == LASER_RUN) {    //wait for transmission available
+            //while (activeMode == LASER_RUN) {    //wait for transmission available
                   if (!HC12.available()) {
                      HC12.print(payload);
-                     delay(100);
-                     activeMode = LASER_CALIBRATION;
+                     delay(20);
+                     //activeMode = LASER_CALIBRATION;
                   }
-            }
+            //}
       }
     }
     
@@ -290,6 +294,44 @@ void readButtonState() {
 
   // save the reading. Next time through the loop, it'll be the lastButtonState:
   lastButtonState = reading;
+}
+
+void readLaserState() {
+      // read the state of the switch into a local variable:
+      int reading;
+      sensorValue = analogRead(sensorPin);
+      delay(1);     
+      if (sensorValue > sensor_threshold)
+          reading = 1;
+      else     
+          reading = 0;
+
+    // if the laser state has changed:
+    if (reading != laserCrossState) {
+      laserCrossState = reading;
+
+      // only send message if the new laserCrossState state is 1
+      if (laserCrossState == 1) {
+         String payload = MASTER_ID + _ID;
+         char serialbuff[64];
+            //sprintf(serialbuff, "0001Sensor Value:  %d", sensorValue);
+            sprintf(serialbuff, " THRESHOLD DONE");
+            payload.concat(serialbuff);
+            Serial.println(payload);
+            //while (activeMode == LASER_RUN) {    //wait for transmission available
+                  if (!HC12.available()) {
+                     HC12.print(payload);
+                     delay(20);
+                     //activeMode = LASER_CALIBRATION;
+                  }
+            //}
+      }
+    }
+    
+ 
+
+  // save the reading. Next time through the loop, it'll be the lastButtonState:
+  lastlaserCrossState = reading;
 }
 
 void moduleReplayDelay() {
@@ -324,6 +366,7 @@ String getModuleState() {
         payload += String(sensorValue) + ';';
         payload += String(vssValue) + ';';
         payload += String(buttonState) + ';';
+        payload += String(laserCrossState) + ';';
 
         return payload;
 }

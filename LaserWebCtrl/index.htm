@@ -84,6 +84,20 @@
                       document.getElementsByClassName("button_pressed_class")[count].className = 
                         document.getElementsByClassName("button_pressed_class")[count].className.replace( /(?:^|\s)active(?!\S)/g , '' );      
                 };
+
+                //get transmitters OSC settings
+                // var num_OSC_IP = this.responseXML.getElementsByTagName('OSC_IP').length;
+                // for (count = 0; count < num_battery; count++) {
+                //   document.getElementsByClassName("osc_ip")[count].value = 
+                //             this.responseXML.getElementsByTagName('OSC_IP')[count].childNodes[0].nodeValue;  
+                //   document.getElementsByClassName("osc_port")[count].value = 
+                //             this.responseXML.getElementsByTagName('OSC_Port')[count].childNodes[0].nodeValue; 
+                //   document.getElementsByClassName("osc_adress")[count].value = 
+                //             this.responseXML.getElementsByTagName('OSC_adress')[count].childNodes[0].nodeValue;
+                //   document.getElementsByClassName("osc_command")[count].value = 
+                //             this.responseXML.getElementsByTagName('OSC_command')[count].childNodes[0].nodeValue;                              
+                // };
+
               }
             }
           }
@@ -419,15 +433,37 @@
     
     <div class="osc"> <br />
         <h2>OSC settings:</h2>
-        
-            OSC IP:<br>
-            <input type="text" class="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
-            <br>
-            OSC Command:<br>
-            <input type="text" class="osc_command" value="">
-            <br><br>
-            <input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(0)">
-        
+        <form id="form_osc1" action="/osc_form" method="post" target="_self">
+          <input type="hidden" id="custId" name="id" value="0">
+          <table style="width:100%">
+            <tr>
+              <td>
+                OSC IP:<br>
+                <input type="text" name="osc_ip" class="osc_ip" value="" 
+                  required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" size="30">
+              </td>
+              <td>
+                OSC Port:<br>
+                <input type="text" name="osc_port" class="osc_port" value="" 
+                  required pattern="^[0-9]{1,5}$" size="15">
+              </td>
+            </tr>
+          </table>
+          <table style="width:100%">
+            <tr>
+              <td>
+                OSC Adress:<br>
+                <input type="text" name="osc_adress" class="osc_adress" value="" size="30">   
+              </td>
+              <td>
+                Command:<br>
+                <input type="text" name="osc_command" class="osc_command" value="" size="15">                
+              </td>
+            </tr>
+          </table>
+            <!--input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(0)"-->
+            <input type="submit" value="Submit" style="float:initial">
+        </form>
     </div>
 
 
@@ -462,15 +498,39 @@
       
       
       <div class="osc"> <br />
-          <h2>OSC settings:</h2>
-          OSC IP:<br>
-          <input type="text" class="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
-          <br>
-          OSC Command:<br>
-          <input type="text" class="osc_command" value="">
-          <br><br>
-          <input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(1)">
-      </div>  
+        <h2>OSC settings:</h2>
+        <form id="form_osc2" action="/osc_form" method="post" target="_self">
+          <input type="hidden" id="custId" name="id" value="1">
+          <table style="width:100%">
+            <tr>
+              <td>
+                OSC IP:<br>
+                <input type="text" name="osc_ip" class="osc_ip" value="" 
+                  required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" size="30">
+              </td>
+              <td>
+                OSC Port:<br>
+                <input type="text" name="osc_port" class="osc_port" value="" 
+                  required pattern="^[0-9]{1,5}$" size="15">
+              </td>
+            </tr>
+          </table>
+          <table style="width:100%">
+            <tr>
+              <td>
+                OSC Adress:<br>
+                <input type="text" name="osc_adress" class="osc_adress" value="" size="30">   
+              </td>
+              <td>
+                Command:<br>
+                <input type="text" name="osc_command" class="osc_command" value="" size="15">                
+              </td>
+            </tr>
+          </table>
+            <!--input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(0)"-->
+            <input type="submit" value="Submit" style="float:initial">
+        </form>
+    </div> 
   
 </div>
 
@@ -502,15 +562,40 @@
       
       
       <div class="osc"> <br />
-          <h2>OSC settings:</h2>
-          OSC IP:<br>
-          <input type="text" class="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
-          <br>
-          OSC Command:<br>
-          <input type="text" class="osc_command" value="">
-          <br><br>
-          <input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(2)">
-      </div>
+        <h2>OSC settings:</h2>
+        <form id="form_osc3" action="/osc_form" method="post" target="_self">
+          <input type="hidden" id="custId" name="id" value="2">
+          <table style="width:100%">
+            <tr>
+              <td>
+                OSC IP:<br>
+                <input type="text" name="osc_ip" class="osc_ip" value="" 
+                  required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" size="30">
+              </td>
+              <td>
+                OSC Port:<br>
+                <input type="text" name="osc_port" class="osc_port" value="" 
+                  required pattern="^[0-9]{1,5}$" size="15">
+              </td>
+            </tr>
+          </table>
+          <table style="width:100%">
+            <tr>
+              <td>
+                OSC Adress:<br>
+                <input type="text" name="osc_adress" class="osc_adress" value="" size="30">   
+              </td>
+              <td>
+                Command:<br>
+                <input type="text" name="osc_command" class="osc_command" value="" size="15">                
+              </td>
+            </tr>
+          </table>
+            <!--input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(0)"-->
+            <input type="submit" value="Submit" style="float:initial">
+        </form>
+    </div>
+
 
 </div>
 
@@ -540,17 +625,41 @@
       onkeyup="sendThresholdValue(event, 3)"><br />
       <!-- Sending event for recognition pressing enter key -->
       
-      
       <div class="osc"> <br />
-          <h2>OSC settings:</h2>
-          OSC IP:<br>
-          <input type="text" class="osc_ip" value="" required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$">
-          <br>
-          OSC Command:<br>
-          <input type="text" class="osc_command" value="">
-          <br><br>
-          <input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(3)">
-      </div>
+        <h2>OSC settings:</h2>
+        <form id="form_osc4" action="/osc_form" method="post" target="_self">
+          <input type="hidden" id="custId" name="id" value="3">
+          <table style="width:100%">
+            <tr>
+              <td>
+                OSC IP:<br>
+                <input type="text" name="osc_ip" class="osc_ip" value="" 
+                  required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" size="30">
+              </td>
+              <td>
+                OSC Port:<br>
+                <input type="text" name="osc_port" class="osc_port" value="" 
+                  required pattern="^[0-9]{1,5}$" size="15">
+              </td>
+            </tr>
+          </table>
+          <table style="width:100%">
+            <tr>
+              <td>
+                OSC Adress:<br>
+                <input type="text" name="osc_adress" class="osc_adress" value="" size="30">   
+              </td>
+              <td>
+                Command:<br>
+                <input type="text" name="osc_command" class="osc_command" value="" size="15">                
+              </td>
+            </tr>
+          </table>
+            <!--input type="button" value="Submit" style="float:initial" onclick="send_osc_parameters(0)"-->
+            <input type="submit" value="Submit" style="float:initial">
+        </form>
+    </div>
+
     </div>
 </div>
 
@@ -570,6 +679,5 @@
     //   }
     // });
 </script>
-
 </body>
 </html>

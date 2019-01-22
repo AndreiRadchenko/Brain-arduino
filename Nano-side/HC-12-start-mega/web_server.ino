@@ -31,10 +31,18 @@
  *      <OSC_IP>192.168.1.1</OSC_IP>
  *      <OSC_IP>192.168.1.1</OSC_IP>
  *      <OSC_IP>192.168.1.1</OSC_IP>
- *      <OSC_command>test</OSC_command>
- *      <OSC_command>test</OSC_command>
- *      <OSC_command>test</OSC_command>
- *      <OSC_command>test</OSC_command>
+ *      <OSC_Port>1234</OSC_Port>
+ *      <OSC_Port>1234</OSC_Port>
+ *      <OSC_Port>1234</OSC_Port>
+ *      <OSC_Port>1234</OSC_Port>
+ *      <OSC_adress>/test</OSC_adress>
+ *      <OSC_adress>/test</OSC_adress>
+ *      <OSC_adress>/test</OSC_adress>
+ *      <OSC_adress>/test</OSC_adress>
+ *      <OSC_command>on</OSC_command>
+ *      <OSC_command>on</OSC_command>
+ *      <OSC_command>on</OSC_command>
+ *      <OSC_command>on</OSC_command>
  *  </transmitters>
 */
 
@@ -80,7 +88,7 @@ void defaultCmd(WebServer &server, WebServer::ConnectionType type, char *url_tai
 void getAJAXxmlCmd(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete)
 {
   unsigned long duration = millis();
-  
+  //sendOSCommand(0);
   int count;                 // used by 'for' loops
   
   server.println("HTTP/1.1 200 OK");
@@ -104,20 +112,25 @@ void getAJAXxmlCmd(WebServer &server, WebServer::ConnectionType type, char *url_
         server << "<sensor>" << transmittersState[count].sensor << "</sensor>";
     for (count = 0; count < 4; count++)
         server << "<battery>" << transmittersState[count].battery << "</battery>";  
-    for (count = 0; count < 4; count++) {
+    for (count = 0; count < 4; count++) 
         server << "<laser_crossed>" << transmittersState[count].laser_crossed << "</laser_crossed>";
-//        Serial.print("transmittersState[count].laser_crossed: ");
-//        Serial.println(transmittersState[count].laser_crossed);
-    }
     for (count = 0; count < 4; count++)
         server << "<button_pressed>" << transmittersState[count].button_pressed << "</button_pressed>"; 
+//    for (count = 0; count < 4; count++)
+//        server << "<OSC_IP>" << transmittersState[count].OSC_IP << "</OSC_IP>"; 
+//    for (count = 0; count < 4; count++)
+//        server << "<OSC_Port>" << transmittersState[count].OSC_Port << "</OSC_Port>";   
+//    for (count = 0; count < 4; count++)
+//        server << "<OSC_adress>" << transmittersState[count].OSC_adress << "</OSC_adress>";
+//    for (count = 0; count < 4; count++)
+//        server << "<OSC_command>" << transmittersState[count].OSC_command << "</OSC_command>";            
     server << "</transmitters>";             
   };
    
-
-    duration = millis() - duration;
-    Serial.print("getAJAXxmlCmd() finishad with ");
-    Serial.println(duration);
+//
+//    duration = millis() - duration;
+//    Serial.print("getAJAXxmlCmd() finished with ");
+//    Serial.println(duration);
 }  
 
 void sendTransmitterModeCmd(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete)
@@ -210,12 +223,77 @@ void sendTransmitterThresholdCmd(WebServer &server, WebServer::ConnectionType ty
        Serial.println(serialbuff);
        //Serial.println(String(pname).toInt());
        Serial1.print(serialbuff);
-
+       
+//       transmittersState[atoi(pname)-1].threshold = atoi(value); //save value to configfile
 
       };
     } while (repeat);
     
+//    saveConfiguration(configfile);
+    
 //    server.httpSeeOther(PREFIX "/form");
+  }
+  else
+  ;
+//    outputPins(server, type, false);
+};
+
+void oscFormCmd(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool tail_complete)
+{ 
+
+  /*
+   *  204 No Content – Немає вмісту
+   *  Сервер успішно обробив запит, але не повертає вміст. Зазвичай використовується у відповідь на успішний запит видалення.
+   */
+  server.println("HTTP/1.1 204 OK");
+  
+  if (type == WebServer::POST)
+  {    
+    bool repeat;
+    char pname[16];
+    char value[128];
+    String buffName = "";
+    String buffValue = "";
+    //String buff;
+    int index;
+    int id;
+    
+    Serial.println("oscFormCmd()");
+    do
+    {
+      repeat = server.readPOSTparam(pname, 16, value, 128);     
+
+      if (repeat)
+     {
+       buffName = String(pname);
+       buffValue = String(value);
+
+       if (buffName == "id")
+          id = buffValue.toInt();
+       if (buffName == "osc_ip")
+          transmittersState[id].OSC_IP = buffValue;
+       if (buffName == "osc_port")
+          transmittersState[id].OSC_Port = buffValue;
+       if (buffName == "osc_adress")
+          transmittersState[id].OSC_adress = buffValue;           
+       if (buffName == "osc_command")
+          transmittersState[id].OSC_command = buffValue;    
+      };
+    } while (repeat);
+    
+    Serial.print("transmitterID: ");
+    Serial.println(id);
+    Serial.print("OSC_IP: ");
+    Serial.println(transmittersState[id].OSC_IP);
+    Serial.print("OSC_Port: ");
+    Serial.println(transmittersState[id].OSC_Port);
+    Serial.print("OSC_adress: ");
+    Serial.println(transmittersState[id].OSC_adress);  
+    Serial.print("OSC_command: ");
+    Serial.println(transmittersState[id].OSC_command); 
+    server.httpSeeOther("/osc_form");
+
+    saveConfiguration(configfile);
   }
   else
   ;
@@ -237,7 +315,7 @@ void sendOSCparametersCmd(WebServer &server, WebServer::ConnectionType type, cha
     int index;
     int id;
     
-    Serial.println("sendTransmitterThreshold()");
+    Serial.println("sendOSCparametersCmd()");
     do
     {
       repeat = server.readPOSTparam(pname, 16, value, 128);     
@@ -271,8 +349,10 @@ void sendOSCparametersCmd(WebServer &server, WebServer::ConnectionType type, cha
     Serial.println(id);
     Serial.print("OSC_IP: ");
     Serial.println(transmittersState[id].OSC_IP);
+    Serial.print("OSC_adress: ");
+    Serial.println(transmittersState[id].OSC_adress);   
     Serial.print("OSC_command: ");
-    Serial.println(transmittersState[id].OSC_command);    
+    Serial.println(transmittersState[id].OSC_command); 
 //    server.httpSeeOther(PREFIX "/form");
   }
   else
