@@ -126,56 +126,59 @@ void setup() {
 }
 
 void loop() {
-    readBuffer = "";                       // Clear readBuffer
-     
-    if (Serial1.available()) {
-        delay(20);
-        while (Serial1.available()) {        // If HC-12 has data
-          incomingByte = Serial1.read();          // Store each icoming byte from HC-12
-          readBuffer += char(incomingByte);    // Add each byte to ReadBuffer string variable
-        };
-        Serial.println(readBuffer);
-        parseReplay(readBuffer);
-    
-    } 
-    else if (Serial.available()) {
-      
-        delay(20);
-        while (Serial.available()) {      // If Serial monitor has data
-          incomingByte = Serial.read();          // Store each icoming byte from HC-12
-          readBuffer += char(incomingByte);    // Add each byte to ReadBuffer string variable   
-        };
-        Serial.println(readBuffer);
-        checkATCommand();
-        checkModeCommand(); 
-        
-    }
-    else {
 
-        char buff[200];
-        int len = 200;
-         /* process incoming connections one at a time forever */
-        webserver->processConnection(buff, &len);
-        //msgReceive();
-        //receiveOSCcommand(); //process OSC over UDP command receiving
-        //erase transmitters state every trustedLiveInterval sec fore watching they live state
-        //if we receive traтsmitter's next data - he are live
-        if ((millis()-lastReset) > trustedLiveInterval)
-           {
-              for (int count = 0; count < 4; count++) {
-                if ((millis() - transmittersState[count].lastUpdate) >  trustedLiveInterval) {
-                   transmittersState[count].threshold = 0;
-                   transmittersState[count].sensor = 0;
-                   transmittersState[count].battery = 0;
-                   transmittersState[count].laser_crossed = 0;
-                   transmittersState[count].button_pressed = 0;
-                }
-              };       
-              lastReset = millis();
-           }; 
-      
-    } 
 //  unsigned long duration = millis();
+  char buff[200];
+  int len = 200;
+   /* process incoming connections one at a time forever */
+  webserver->processConnection(buff, &len);
+  //msgReceive();
+  //receiveOSCcommand(); //process OSC over UDP command receiving
+
+  readBuffer = "";                       // Clear readBuffer
+
+  
+  //erase transmitters state every trustedLiveInterval sec fore watching they live state
+  //if we receive traтsmitter's next data - he are live
+  if ((millis()-lastReset) > trustedLiveInterval)
+     {
+        for (int count = 0; count < 4; count++) {
+          if ((millis() - transmittersState[count].lastUpdate) >  trustedLiveInterval) {
+             transmittersState[count].threshold = 0;
+             transmittersState[count].sensor = 0;
+             transmittersState[count].battery = 0;
+             transmittersState[count].laser_crossed = 0;
+             transmittersState[count].button_pressed = 0;
+          }
+
+        };
+        
+        lastReset = millis();
+     };
+
+  if (Serial.available()) {
+    delay(20);
+    while (Serial.available()) {      // If Serial monitor has data
+      incomingByte = Serial.read();          // Store each icoming byte from HC-12
+      readBuffer += char(incomingByte);    // Add each byte to ReadBuffer string variable   
+    };
+    Serial.println(readBuffer);
+    checkATCommand();
+    checkModeCommand(); 
+    
+  };
+
+  if (Serial1.available()) {
+    delay(20);
+    while (Serial1.available()) {        // If HC-12 has data
+      incomingByte = Serial1.read();          // Store each icoming byte from HC-12
+      readBuffer += char(incomingByte);    // Add each byte to ReadBuffer string variable
+    };
+    Serial.println(readBuffer);
+    parseReplay(readBuffer);
+    
+  };
+
 
 //  #ifdef DEBAG
 //    duration = millis() - duration;

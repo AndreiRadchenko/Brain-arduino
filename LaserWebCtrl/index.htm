@@ -18,22 +18,13 @@
                 // get transmitters mode
                 var num_mode = this.responseXML.getElementsByTagName('mode').length;
                 //window.alert('num_mode'); 
-                //window.alert(this.responseXML.getElementsByTagName('sensor')[2].childNodes[0].nodeValue);
                 for (count = 0; count < num_mode; count++) {
                   document.getElementsByClassName("modes")[count].selectedIndex =
                     this.responseXML.getElementsByTagName('mode')[count].childNodes[0].nodeValue;
                 };
 
                 // get transmitters threshold
-                // var num_threshold = this.responseXML.getElementsByTagName('threshold').length;
-                // for (count = 0; count < num_threshold; count++) {
-                //   document.getElementsByClassName("threshold")[count].value =
-                //     this.responseXML.getElementsByTagName('threshold')[count].childNodes[0].nodeValue;
-                // };
-
                 // get transmitters sensor
-                // document.getElementById("sensor3").value = 
-                //     this.responseXML.getElementsByTagName('sensor')[2].childNodes[0].nodeValue;
                 var num_sensor = this.responseXML.getElementsByTagName('sensor').length;
                 var sensor_value;
                 var threshold_value;
@@ -61,8 +52,6 @@
                 };
  
                 // get transmitters laser state
-                // <a class="laser_button_class">Laser Crossed</a>
-                // <a class="button_pressed_class">Button Pressed</a>
                 var num_laser_crossed = this.responseXML.getElementsByTagName('laser_crossed').length;
                 var laser_crossed;
                 for (count = 0; count < num_laser_crossed; count++) {

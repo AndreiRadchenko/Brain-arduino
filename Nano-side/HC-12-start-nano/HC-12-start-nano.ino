@@ -37,7 +37,7 @@ unsigned long Interval = 5000;     // milliseconds between updates
 unsigned long lastUpdate = 0;   // last update of position
 int sensorPin = A0;  // select the input pin for the photoresestor
 int sensorValue = 0;        // variable to store the value coming from the sensor
-int sensor_threshold = 500;  // threshold for light sensor
+int sensor_threshold = 1024;  // threshold for light sensor
 long vssValue = 0;  
 
 int buttonState = HIGH;             // the current reading from the input pin
@@ -55,7 +55,7 @@ byte incomingByte;
 String readBuffer = "";
 String header;
 String payload;
-String _ID = "03"; //Nano transceiver ID - unique for each Nano-HC-12 accemble
+String _ID = "01"; //Nano transceiver ID - unique for each Nano-HC-12 accemble
 String MASTER_ID = "00";
 
 SoftwareSerial HC12(10,11); // HC-12 TX Pin, HC-12 RX Pin
@@ -321,7 +321,7 @@ void readLaserState() {
             //while (activeMode == LASER_RUN) {    //wait for transmission available
                   if (!HC12.available()) {
                      HC12.print(payload);
-                     delay(20);
+                     delay(300);
                      //activeMode = LASER_CALIBRATION;
                   }
             //}
