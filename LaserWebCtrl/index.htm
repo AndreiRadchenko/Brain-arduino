@@ -77,13 +77,13 @@
                 //get transmitters OSC settings
                 // var num_OSC_IP = this.responseXML.getElementsByTagName('OSC_IP').length;
                 // for (count = 0; count < num_battery; count++) {
-                //   document.getElementsByClassName("osc_ip")[count].value = 
+                //   document.getElementsByClassName("osc_ip")[count].data-placeholder = 
                 //             this.responseXML.getElementsByTagName('OSC_IP')[count].childNodes[0].nodeValue;  
-                //   document.getElementsByClassName("osc_port")[count].value = 
+                //   document.getElementsByClassName("osc_port")[count].data-placeholder = 
                 //             this.responseXML.getElementsByTagName('OSC_Port')[count].childNodes[0].nodeValue; 
-                //   document.getElementsByClassName("osc_adress")[count].value = 
+                //   document.getElementsByClassName("osc_adress")[count].data-placeholder = 
                 //             this.responseXML.getElementsByTagName('OSC_adress')[count].childNodes[0].nodeValue;
-                //   document.getElementsByClassName("osc_command")[count].value = 
+                //   document.getElementsByClassName("osc_command")[count].data-placeholder = 
                 //             this.responseXML.getElementsByTagName('OSC_command')[count].childNodes[0].nodeValue;                              
                 // };
 
@@ -401,7 +401,7 @@
     </div><br />
 
     <label for="battery">Battery level: </label>
-    <progress id="battery" class="battery" value="0" max="100" ></progress><br />
+    <progress id="battery" class="battery" value="0" max="100"></progress><br />
 
       <label for="modes">Mode: </label>
       <select class="modes" id="select_modes1" onchange=
@@ -446,7 +446,8 @@
               </td>
               <td>
                 Command:<br>
-                <input type="text" name="osc_command" class="osc_command" value="" size="15">                
+                <input type="text" name="osc_command" class="osc_command" value="" size="15" 
+                        placeholder="">                
               </td>
             </tr>
           </table>

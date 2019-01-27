@@ -155,6 +155,7 @@ void lightMeasurement() {
         sensorValue = analogRead(sensorPin);
         vssValue = readVcc();
         vssValue = vssValue*1.38;
+        //1.265 for ID=01 - enother type of mega328 chip
         
 }
 
